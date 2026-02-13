@@ -1,0 +1,120 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-white py-3">
+                <h4 class="mb-0"><i class="fas fa-user-plus me-2"></i>Add New Student</h4>
+            </div>
+            <div class="card-body">
+                <form action="/students/add" method="POST" class="needs-validation" novalidate>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="admission_number" class="form-label">Admission Number *</label>
+                            <input type="text" class="form-control" id="admission_number" name="admission_number" required>
+                            <div class="invalid-feedback">Please enter admission number.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="roll_number" class="form-label">Roll Number *</label>
+                            <input type="text" class="form-control" id="roll_number" name="roll_number" required>
+                            <div class="invalid-feedback">Please enter roll number.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">First Name *</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" required>
+                            <div class="invalid-feedback">Please enter first name.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Last Name *</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" required>
+                            <div class="invalid-feedback">Please enter last name.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="gender" class="form-label">Gender *</label>
+                            <select class="form-select" id="gender" name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <div class="invalid-feedback">Please select gender.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="date_of_birth" class="form-label">Date of Birth *</label>
+                            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+                            <div class="invalid-feedback">Please enter date of birth.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="academic_year" class="form-label">Academic Year *</label>
+                            <input type="text" class="form-control" id="academic_year" name="academic_year" 
+                                   placeholder="e.g., 2024-2025" required>
+                            <div class="invalid-feedback">Please enter academic year.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="tel" class="form-control" id="phone" name="phone">
+                        </div>
+                        <div class="col-12">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="class_id" class="form-label">Class</label>
+                            <input type="number" class="form-control" id="class_id" name="class_id" placeholder="e.g., 1">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="section" class="form-label">Section</label>
+                            <input type="text" class="form-control" id="section" name="section" placeholder="e.g., A">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="graduated">Graduated</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <a href="/students" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Students
+                                </a>
+                                <div>
+                                    <button type="reset" class="btn btn-outline-secondary me-2">
+                                        <i class="fas fa-redo me-2"></i>Reset
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Add Student
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+})();
+</script>
+
+<%- include('partials/footer') %>

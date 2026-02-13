@@ -1,0 +1,125 @@
+<%- include('partials/header') %>
+
+<% if (typeof student !== 'undefined') { %>
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/students">Students</a></li>
+                <li class="breadcrumb-item active"><%= student.first_name %> <%= student.last_name %></li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Student Info Card -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="avatar bg-primary bg-opacity-10 rounded-circle mx-auto mb-3" style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
+                    <span class="text-primary fs-2 fw-bold"><%= student.first_name.charAt(0) %><%= student.last_name.charAt(0) %></span>
+                </div>
+                <h4 class="mb-1"><%= student.first_name %> <%= student.last_name %></h4>
+                <p class="text-muted mb-2">Admission No: <%= student.admission_number %></p>
+                <span class="badge bg-<%= student.status === 'active' ? 'success' : 'secondary' %> mb-3"><%= student.status %></span>
+                
+                <div class="list-group list-group-flush text-start">
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>Roll Number</span>
+                        <strong><%= student.roll_number %></strong>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>Gender</span>
+                        <strong><%= student.gender %></strong>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>Date of Birth</span>
+                        <strong><%= student.date_of_birth ? new Date(student.date_of_birth).toLocaleDateString() : 'N/A' %></strong>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>Academic Year</span>
+                        <strong><%= student.academic_year %></strong>
+                    </div>
+                    <div class="list-group-item">
+                        <span class="text-muted">Email</span><br>
+                        <strong><%= student.email || 'N/A' %></strong>
+                    </div>
+                    <div class="list-group-item">
+                        <span class="text-muted">Phone</span><br>
+                        <strong><%= student.phone || 'N/A' %></strong>
+                    </div>
+                    <div class="list-group-item">
+                        <span class="text-muted">Address</span><br>
+                        <strong><%= student.address || 'N/A' %></strong>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="/students/edit/<%= student.id %>" class="btn btn-primary w-100">
+                    <i class="fas fa-edit me-2"></i>Edit Student
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marks Section -->
+    <div class="col-lg-8 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-clipboard-check me-2"></i>Marks & Performance</h5>
+                <a href="/marks/add" class="btn btn-sm btn-outline-primary">Add Marks</a>
+            </div>
+            <div class="card-body">
+                <% if (typeof marks !== 'undefined' && marks.length > 0) { %>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Exam Type</th>
+                                <th>Marks</th>
+                                <th>Percentage</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% marks.forEach(mark => { 
+                                const percentage = (mark.marks_obtained / mark.max_marks * 100).toFixed(2);
+                            %>
+                            <tr>
+                                <td><%= mark.subject_name || 'Unknown Subject' %></td>
+                                <td>
+                                    <span class="badge bg-<%= mark.exam_type === 'internal' ? 'info' : 'warning' %>">
+                                        <%= mark.exam_type %>
+                                    </span>
+                                </td>
+                                <td><%= mark.marks_obtained %>/<%= mark.max_marks %></td>
+                                <td>
+                                    <span class="badge bg-<%= percentage >= 60 ? 'success' : (percentage >= 40 ? 'warning' : 'danger') %>">
+                                        <%= percentage %>%
+                                    </span>
+                                </td>
+                                <td><%= new Date(mark.exam_date).toLocaleDateString() %></td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } else { %>
+                <div class="text-center py-4">
+                    <i class="fas fa-clipboard fs-1 text-muted mb-3"></i>
+                    <p class="text-muted">No marks recorded yet.</p>
+                    <a href="/marks/add" class="btn btn-primary">Add Marks</a>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+<% } else { %>
+<div class="alert alert-danger">Student not found.</div>
+<a href="/students" class="btn btn-secondary">Back to Students</a>
+<% } %>
+
+<%- include('partials/footer') %>

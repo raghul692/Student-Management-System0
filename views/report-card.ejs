@@ -1,0 +1,220 @@
+<%- include('partials/header') %>
+
+<% if (typeof student !== 'undefined') { %>
+<div class="row mb-4">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/marks">Marks</a></li>
+                <li class="breadcrumb-item active">Report Card</li>
+            </ol>
+        </nav>
+        <button class="btn btn-primary" onclick="window.print()">
+            <i class="fas fa-print me-2"></i>Print
+        </button>
+    </div>
+</div>
+
+<div class="card" id="reportCard">
+    <div class="card-body p-4">
+        <!-- Header -->
+        <div class="text-center border-bottom pb-3 mb-4">
+            <h3 class="mb-1">Student Management System</h3>
+            <p class="text-muted mb-0">Academic Performance Report Card</p>
+            <h5 class="mt-2"><strong>Academic Year: <%= academic_year || 'N/A' %></strong></h5>
+        </div>
+
+        <!-- Student Info -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <td class="fw-bold" style="width: 40%;">Student Name</td>
+                        <td><%= student.first_name %> <%= student.last_name %></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Admission No</td>
+                        <td><%= student.admission_number %></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Roll Number</td>
+                        <td><%= student.roll_number %></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table class="table table-borderless mb-0">
+                    <tr>
+                        <td class="fw-bold" style="width: 40%;">Gender</td>
+                        <td><%= student.gender %></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Date of Birth</td>
+                        <td><%= student.date_of_birth ? new Date(student.date_of_birth).toLocaleDateString() : 'N/A' %></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold">Class/Section</td>
+                        <td><%= student.class_id || 'N/A' %> <%= student.section ? '- ' + student.section : '' %></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Marks Table -->
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th rowspan="2" class="align-middle">Subject</th>
+                        <th colspan="3">Internal Exam</th>
+                        <th colspan="3">Semester Exam</th>
+                        <th colspan="3">Annual Exam</th>
+                        <th rowspan="2" class="align-middle">Total</th>
+                        <th rowspan="2" class="align-middle">%</th>
+                        <th rowspan="2" class="align-middle">Grade</th>
+                    </tr>
+                    <tr>
+                        <th>Max</th>
+                        <th>Obt</th>
+                        <th>%</th>
+                        <th>Max</th>
+                        <th>Obt</th>
+                        <th>%</th>
+                        <th>Max</th>
+                        <th>Obt</th>
+                        <th>%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% 
+                    const subjects = Object.keys(subjectScores);
+                    if (subjects.length > 0) {
+                        subjects.forEach(subject => {
+                            const data = subjectScores[subject];
+                            const percentage = data.max > 0 ? (data.obtained / data.max * 100).toFixed(2) : 0;
+                            const grade = percentage >= 90 ? 'A+' : percentage >= 80 ? 'A' : percentage >= 70 ? 'B+' : percentage >= 60 ? 'B' : percentage >= 50 ? 'C' : percentage >= 40 ? 'D' : 'F';
+                    %>
+                    <tr>
+                        <td class="text-start fw-bold"><%= subject %></td>
+                        <td>-</td><td>-</td><td>-</td>
+                        <td>-</td><td>-</td><td>-</td>
+                        <td>-</td><td>-</td><td>-</td>
+                        <td><%= data.obtained %>/<%= data.max %></td>
+                        <td><%= percentage %>%</td>
+                        <td><span class="badge bg-<%= percentage >= 60 ? 'success' : (percentage >= 40 ? 'warning' : 'danger') %>"><%= grade %></span></td>
+                    </tr>
+                    <% }) } else { %>
+                    <tr>
+                        <td colspan="13" class="text-center py-4">No marks data available</td>
+                    </tr>
+                    <% } %>
+                </tbody>
+                <tfoot class="table-light">
+                    <tr>
+                        <td colspan="10" class="text-end fw-bold">Grand Total:</td>
+                        <td class="fw-bold"><%= totalMarks %>/<%= totalMaxMarks %></td>
+                        <td class="fw-bold"><%= overallPercentage %>%</td>
+                        <td><span class="badge bg-<%= overallPercentage >= 60 ? 'success' : (overallPercentage >= 40 ? 'warning' : 'danger') %> fs-6"><%= overallGrade %></span></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Summary -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="bg-light p-3 rounded">
+                    <h6 class="mb-2">Performance Summary</h6>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Total Marks</span>
+                        <strong><%= totalMarks %>/<%= totalMaxMarks %></strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Percentage</span>
+                        <strong><%= overallPercentage %>%</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Grade</span>
+                        <strong><%= overallGrade %></strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Result</span>
+                        <strong class="<%= overallPercentage >= 40 ? 'text-success' : 'text-danger' %>">
+                            <%= overallPercentage >= 40 ? 'PASS' : 'FAIL' %>
+                        </strong>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="bg-light p-3 rounded">
+                    <h6 class="mb-3">Grade Scale</h6>
+                    <div class="row text-center">
+                        <div class="col-3">
+                            <div class="border rounded py-1 mb-1">A+</div>
+                            <small>90-100%</small>
+                        </div>
+                        <div class="col-3">
+                            <div class="border rounded py-1 mb-1">A</div>
+                            <small>80-89%</small>
+                        </div>
+                        <div class="col-3">
+                            <div class="border rounded py-1 mb-1">B+</div>
+                            <small>70-79%</small>
+                        </div>
+                        <div class="col-3">
+                            <div class="border rounded py-1 mb-1">B</div>
+                            <small>60-69%</small>
+                        </div>
+                        <div class="col-3">
+                            <div class="border rounded py-1 mb-1">C</div>
+                            <small>50-59%</small>
+                        </div>
+                        <div class="col-3">
+                            <div class="border rounded py-1 mb-1">D</div>
+                            <small>40-49%</small>
+                        </div>
+                        <div class="col-3">
+                            <div class="border rounded py-1 mb-1">F</div>
+                            <small><40%</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="border-top mt-4 pt-3">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <div class="border-top pt-2">
+                        <small class="text-muted">Class Teacher's Signature</small>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="border-top pt-2">
+                        <small class="text-muted">Parent's Signature</small>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="border-top pt-2">
+                        <small class="text-muted">Principal's Signature</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .navbar, footer, .breadcrumb, .btn { display: none !important; }
+    .card { border: none !important; box-shadow: none !important; }
+    .card-body { padding: 0 !important; }
+}
+</style>
+<% } else { %>
+<div class="alert alert-danger">Student not found.</div>
+<a href="/marks" class="btn btn-secondary">Back to Marks</a>
+<% } %>
+
+<%- include('partials/footer') %>

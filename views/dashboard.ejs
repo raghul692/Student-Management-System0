@@ -1,0 +1,197 @@
+<%- include('partials/header') %>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="mb-1">Dashboard</h2>
+        <p class="text-muted">Welcome back, <%= user.full_name || user.username %>!</p>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-1">Total Students</h6>
+                        <h2 class="mb-0"><%= stats.totalStudents || 0 %></h2>
+                    </div>
+                    <div class="fs-1 opacity-50">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-primary-dark">
+                <a href="/students" class="text-white text-decoration-none">
+                    View all students <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-1">Marks Entries</h6>
+                        <h2 class="mb-0"><%= stats.totalMarksEntries || 0 %></h2>
+                    </div>
+                    <div class="fs-1 opacity-50">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-success-dark">
+                <a href="/marks" class="text-white text-decoration-none">
+                    Manage marks <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-1">Quick Actions</h6>
+                        <p class="mb-0 small">Fast access to common tasks</p>
+                    </div>
+                    <div class="fs-1 opacity-50">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-info-dark">
+                <a href="/students/add" class="text-white text-decoration-none">
+                    Add new student <i class="fas fa-plus ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent Students -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="fas fa-user-plus me-2"></i>Recent Students</h5>
+            </div>
+            <div class="card-body">
+                <% if (stats.recentStudents && stats.recentStudents.length > 0) { %>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Roll No</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% stats.recentStudents.forEach(student => { %>
+                            <tr>
+                                <td><%= student.first_name %> <%= student.last_name %></td>
+                                <td><%= student.roll_number %></td>
+                                <td>
+                                    <span class="badge bg-<%= student.status === 'active' ? 'success' : 'secondary' %>">
+                                        <%= student.status %>
+                                    </span>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } else { %>
+                <p class="text-muted text-center py-3">No students added yet.</p>
+                <% } %>
+            </div>
+            <div class="card-footer text-center">
+                <a href="/students" class="btn btn-outline-primary btn-sm">View All Students</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Marks -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i>Recent Marks</h5>
+            </div>
+            <div class="card-body">
+                <% if (stats.recentMarks && stats.recentMarks.length > 0) { %>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Marks</th>
+                                <th>Exam Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% stats.recentMarks.forEach(mark => { %>
+                            <tr>
+                                <td><%= mark.first_name %> <%= mark.last_name %></td>
+                                <td><%= mark.marks_obtained %>/<%= mark.max_marks %></td>
+                                <td>
+                                    <span class="badge bg-<%= mark.exam_type === 'internal' ? 'info' : 'warning' %>">
+                                        <%= mark.exam_type %>
+                                    </span>
+                                </td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } else { %>
+                <p class="text-muted text-center py-3">No marks entries yet.</p>
+                <% } %>
+            </div>
+            <div class="card-footer text-center">
+                <a href="/marks" class="btn btn-outline-success btn-sm">View All Marks</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Cards -->
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <a href="/students/add" class="text-decoration-none">
+            <div class="card border-primary h-100">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-user-plus fs-1 text-primary mb-3"></i>
+                    <h5 class="card-title">Add New Student</h5>
+                    <p class="card-text text-muted">Register a new student in the system</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4 mb-3">
+        <a href="/marks/add" class="text-decoration-none">
+            <div class="card border-success h-100">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-edit fs-1 text-success mb-3"></i>
+                    <h5 class="card-title">Enter Marks</h5>
+                    <p class="card-text text-muted">Add marks for students</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4 mb-3">
+        <a href="/marks" class="text-decoration-none">
+            <div class="card border-info h-100">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-chart-bar fs-1 text-info mb-3"></i>
+                    <h5 class="card-title">View Reports</h5>
+                    <p class="card-text text-muted">Generate and view reports</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,148 @@
+<%- include('partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">Student Management</h2>
+        <p class="text-muted mb-0">Manage all student records</p>
+    </div>
+    <a href="/students/add" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Add New Student
+    </a>
+</div>
+
+<!-- Search and Filter -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form action="/students" method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label for="search" class="form-label">Search</label>
+                <input type="text" class="form-control" id="search" name="search" 
+                       placeholder="Name, admission number, roll number..." value="<%= typeof search !== 'undefined' ? search : '' %>">
+            </div>
+            <div class="col-md-3">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" name="status">
+                    <option value="">All Status</option>
+                    <option value="active" <%= typeof status !== 'undefined' && status === 'active' ? 'selected' : '' %>>Active</option>
+                    <option value="inactive" <%= typeof status !== 'undefined' && status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+                    <option value="graduated" <%= typeof status !== 'undefined' && status === 'graduated' ? 'selected' : '' %>>Graduated</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-1"></i>Search
+                </button>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <a href="/students" class="btn btn-secondary w-100">
+                    <i class="fas fa-redo me-1"></i>Reset
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Students Table -->
+<div class="card">
+    <div class="card-body">
+        <% if (typeof students !== 'undefined' && students.length > 0) { %>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Admission No</th>
+                        <th>Name</th>
+                        <th>Roll Number</th>
+                        <th>Gender</th>
+                        <th>Academic Year</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% students.forEach(student => { %>
+                    <tr>
+                        <td><strong><%= student.admission_number %></strong></td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-primary bg-opacity-10 rounded-circle me-2">
+                                    <span class="text-primary fw-bold"><%= student.first_name.charAt(0) %><%= student.last_name.charAt(0) %></span>
+                                </div>
+                                <div>
+                                    <div class="fw-bold"><%= student.first_name %> <%= student.last_name %></div>
+                                    <small class="text-muted"><%= student.email || 'No email' %></small>
+                                </div>
+                            </div>
+                        </td>
+                        <td><%= student.roll_number %></td>
+                        <td><%= student.gender %></td>
+                        <td><%= student.academic_year %></td>
+                        <td>
+                            <span class="badge bg-<%= student.status === 'active' ? 'success' : (student.status === 'inactive' ? 'warning' : 'info') %>">
+                                <%= student.status %>
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="/students/details/<%= student.id %>" class="btn btn-outline-primary" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="/students/edit/<%= student.id %>" class="btn btn-outline-secondary" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-outline-danger" title="Delete" 
+                                        onclick="confirmDelete('<%= student.id %>', '<%= student.first_name %> <%= student.last_name %>')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <% } else { %>
+        <div class="text-center py-5">
+            <i class="fas fa-users fs-1 text-muted mb-3"></i>
+            <h5 class="text-muted">No students found</h5>
+            <p class="text-muted">Get started by adding your first student.</p>
+            <a href="/students/add" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Student
+            </a>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="deleteStudentName"></strong>?</p>
+                <p class="text-danger mb-0"><small><i class="fas fa-exclamation-triangle me-1"></i>This action cannot be undone. All marks associated with this student will also be deleted.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmDelete(id, name) {
+    document.getElementById('deleteStudentName').textContent = name;
+    document.getElementById('deleteForm').action = '/students/delete/' + id;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+</script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="py-5">
+            <i class="fas fa-server fs-1 text-danger mb-4"></i>
+            <h1 class="display-1">500</h1>
+            <h4 class="mb-3">Server Error</h4>
+            <p class="text-muted mb-4">Something went wrong on our end. Please try again later.</p>
+            <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-danger mb-4 text-start">
+                <strong>Error:</strong> <%= error %>
+            </div>
+            <% } %>
+            <a href="/dashboard" class="btn btn-primary">
+                <i class="fas fa-home me-2"></i>Go to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

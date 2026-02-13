@@ -1,0 +1,93 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header bg-white py-3">
+                <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Add Marks</h4>
+            </div>
+            <div class="card-body">
+                <form action="/marks/add" method="POST">
+                    <div class="mb-3">
+                        <label for="student_id" class="form-label">Student *</label>
+                        <select class="form-select" id="student_id" name="student_id" required>
+                            <option value="">Select Student</option>
+                            <% if (typeof students !== 'undefined') { %>
+                            <% students.forEach(student => { %>
+                            <option value="<%= student.id %>">
+                                <%= student.first_name %> <%= student.last_name %> (Adm: <%= student.admission_number %>)
+                            </option>
+                            <% }) %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="subject_id" class="form-label">Subject *</label>
+                        <select class="form-select" id="subject_id" name="subject_id" required>
+                            <option value="">Select Subject</option>
+                            <% if (typeof subjects !== 'undefined') { %>
+                            <% subjects.forEach(subject => { %>
+                            <option value="<%= subject.id %>"><%= subject.subject_name %></option>
+                            <% }) %>
+                            <% } else { %>
+                            <option value="1">Mathematics</option>
+                            <option value="2">Science</option>
+                            <option value="3">English</option>
+                            <option value="4">Social Science</option>
+                            <option value="5">Hindi</option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exam_type" class="form-label">Exam Type *</label>
+                        <select class="form-select" id="exam_type" name="exam_type" required>
+                            <option value="internal">Internal</option>
+                            <option value="semester">Semester</option>
+                            <option value="annual">Annual</option>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="marks_obtained" class="form-label">Marks Obtained *</label>
+                            <input type="number" class="form-control" id="marks_obtained" name="marks_obtained" 
+                                   step="0.01" min="0" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="max_marks" class="form-label">Max Marks *</label>
+                            <input type="number" class="form-control" id="max_marks" name="max_marks" 
+                                   step="0.01" value="100" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exam_date" class="form-label">Exam Date *</label>
+                        <input type="date" class="form-control" id="exam_date" name="exam_date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="academic_year" class="form-label">Academic Year *</label>
+                        <input type="text" class="form-control" id="academic_year" name="academic_year" 
+                               placeholder="e.g., 2024-2025" required>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="/marks" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Marks
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Marks
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Set default date to today
+document.getElementById('exam_date').valueAsDate = new Date();
+// Set current academic year
+const currentYear = new Date().getFullYear();
+const nextYear = currentYear + 1;
+document.getElementById('academic_year').value = currentYear + '-' + nextYear;
+</script>
+
+<%- include('partials/footer') %>
